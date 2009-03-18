@@ -1,0 +1,165 @@
+
+/*
+input.invalid {
+	background: #FCC;
+	border: 0;
+	}*/
+.calendarButton {
+	background: #7799bb url(calendarIcon.gif) no-repeat 0px 0px;
+	height: 18px;
+	width: 18px;
+	border: 0;
+	padding: 0;
+	margin: 0;
+	text-indent: -2000px;
+	}
+	
+.calendarPop {
+	position: absolute;
+	top: 0;
+	right: -18.3em;
+	width: 18.3em;
+	border: .1em solid #A2BBDD;
+	padding: .3em .5em;
+	font: 10px/2em Verdana, Arial, Helvetica, sans-serif; 
+	text-align: center;
+	background: #C3D9FF;
+	z-index: 9999;
+	}
+	.bgDiv{
+		height: 100%;
+		width: 100%;
+		position: absolute;
+		background: #003;
+		top: .3em;
+		left: .3em;
+		z-index: -1;
+		padding: 0 0 0 .1em;
+		filter:alpha(opacity=40);
+		-moz-opacity: 0.4;
+		opacity: 0.4;
+		}
+	.fgDiv{
+		z-index: 9999;
+		}
+	/*
+	.month0 {background: #CAC2FF;}
+	.month1 {background: #C2D9FF;}
+	.month2 {background: #C2F7FF;}
+	.month3 {background: #C2FFE9;}
+	.month4 {background: #C2FFCA;}
+	.month5 {background: #D9FFC2;}
+	.month6 {background: #F7FFC2;}
+	.month7 {background: #FFE9C2;}
+	.month8 {background: #FFCAC2;}
+	.month9 {background: #FFC2D9;}
+	.month10 {background: #FFC2F7;}
+	.month11 {background: #E9C2FF;}
+	*/
+	.bottomButtons {
+		position: relative;
+		padding: .2em 0 0 0;
+		}
+	.calendarPop div.closeCalendar,
+	.calendarPop div.cancelCalendar {
+		position: absolute;
+		bottom: 0;
+		line-height: 1.2em;
+		text-decoration: none;
+		color: #112ABB;
+		cursor: pointer;
+		}
+	.calendarPop div.closeCalendar {right: 0;}
+	.calendarPop div.cancelCalendar {left: 0;}
+	.calendarPop div.selectToday {
+		line-height: 1.2em;
+		text-decoration: none;
+		margin: 0;
+		padding: 0;
+		color: #112ABB;
+		cursor: pointer;
+		}
+	.calendarPop div.prevMonth,
+	.calendarPop div.nextMonth {
+		position: absolute;
+		top: 0;
+		text-decoration: none;
+		padding: 0 .6em;
+		line-height: 2em;
+		color: #112ABB;
+		cursor: pointer;
+		}
+		.calendarPop div.prevMonth {left:0;}
+		.calendarPop div.nextMonth {right:0;}
+	.calendarPop .monthDisplay {
+		font: bold 1.4em/1.4em Arial, Helvetica, sans-serif; 
+		color: #112ABB;
+		}
+	.calendarPop table {
+		width: 18.3em;
+		table-layout: fixed;
+		border: .1em solid #7799bb;
+		}
+		.calendarPop thead td {
+			background: #A2BBDD;
+			color: #FFF;
+			line-height: 1.4em;
+			border: 0;
+			border-bottom: .1em solid #7799bb;
+			}
+		.calendarPop thead td.day6,
+		.calendarPop thead td.day0 {
+			color: #E8EEF7;
+			}
+		.calendarPop table td {
+			padding: 0;
+			width: 2.5em;
+			cursor: pointer;
+			text-align: center;
+			}	
+			
+		.calendarPop td div {
+			display: block;
+			text-decoration: none;
+			background: #FFF;
+			line-height: 2em;
+			height: 2em;
+			color: #112ABB;
+			/*color: #000;*/
+			}
+			.calendarPop td div span {display: block;}
+		.calendarPop .currentMonth div {	
+			background: #FFF;
+			}
+			.calendarPop div.day0,
+			.calendarPop div.day6 {
+				background: #E8EEF7;
+				}
+		.calendarPop .prevMonth div,
+		.calendarPop .nextMonth div {
+			color: #AAA;
+			}
+		
+		.calendarPop td.valid div.active { 
+			background: #ACC3E7; 
+			color: #16246F;
+			}
+		.calendarPop td.invalid div {
+			display: block;
+			}	
+		.calendarPop td.invalid div span {
+			text-decoration: line-through;
+			}	
+			
+			.calendarPop td.invalid div.active { 
+				background: #C2C8D2; 
+				cursor: not-allowed;
+				color: #900;
+				}
+				
+		.calendarPop td.selected div,
+		.calendarPop td.selected div.active {
+			background-color: #316AC5;
+			color: #FFF;		
+			font-weight: bold;
+			}	

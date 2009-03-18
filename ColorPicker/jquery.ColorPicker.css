@@ -1,0 +1,205 @@
+/*** COLORPICKER STYLES ******************************************/
+
+.cpk_input {width: 100px;} /* hex */
+.cpk_span {
+	margin: 0 0 0 1px;
+	background: #FFF url("bg_transparent.gif") repeat 0px 0px;
+	padding: 4px 0;
+	}
+.cpk_swatch {
+	padding: 1px 10px;
+	border: 1px solid #808080;
+	margin: 0;
+	cursor: pointer;
+	text-decoration: none;
+	}
+.cpk_swatch:hover,
+.cpk_swatch:focus {
+	border-color: #FFF;
+	}
+.cpk_active {}
+	.cpk_active .cpk_swatch {
+		border-color: #FFF;
+		}
+/*** THE COLOR PICKER MARKUP ********************************************************
+<div id="cpk_div">
+	<div class="cpk_bg"></div>
+	<div class="cpk_wheel">
+		<div class="cpk_hue">
+			<div class="cpk_hueBg"></div>
+			<div class="cpk_hueFg"></div>
+			</div>
+		</div>
+	<div class="cpk_orig">
+		<div class="cpk_origBg"></div>
+		<div class="cpk_origFg"></div>
+		</div>
+	<div class="cpk_curr">
+		<div class="cpk_currBg"></div>
+		<div class="cpk_currFg"></div>
+		</div>
+	<div class="cpk_lum"></div>
+	<div class="cpk_sat"></div>
+	<div class="cpk_area">
+		<div class="cpk_bMarker"></div>
+		</div>
+	<a href="#AcceptColor" class="cpk_accept"> </a>
+	<a href="#RejectColor" class="cpk_reject"> </a>
+	</div>
+************************************************************************************/
+.cpk_div {
+	display: block;
+	position: absolute;
+	z-index: 999;
+	top: 0;
+	left: 0;
+	}
+	.cpk_bg {
+		height: 180px;
+		width: 180px;
+		position: absolute;
+		background: url('colorWheel.png') no-repeat 0px 0px;
+		z-index: 1000;
+		}
+	.cpk_wheel {
+		height: 152px; /* hue circle inner diameter */
+		width: 152px; /* diameter = 2 * Radius */
+		padding: 14px; /* hue circle thickness (clickable range) */	
+		top: 0;
+		left: 0;
+		z-index: 1001;
+		cursor: pointer;
+		}
+		.cpk_hue {
+			position: absolute;
+			height: 20px;
+			width: 20px;
+			top: 0; /* Set position at "12 O'Clock" : radius to follow is calculated from center of the wheel */
+			left: 90px; 
+			z-index: 1004;
+			}
+			.cpk_hueBg { 
+				position: absolute;
+				height: 14px;
+				width: 14px;
+				top: 3px;
+				left: 3px;
+				background: #F00;
+				z-index: 1004;
+				}
+			.cpk_hueFg {
+				position: absolute;
+				height: 20px;
+				width: 20px;
+				top: 0;
+				left: 0;
+				background: url('colorWheelMarker.png') no-repeat 0px 0px;
+				z-index: 1005;
+				}
+	.cpk_orig {
+		position: absolute;
+		width: 27px;
+		height: 27px;
+		top: 13px; 
+		left: 13px;
+		z-index: 1002;
+		}
+		.cpk_origBg {
+			position: absolute;
+			width: 12px;
+			height: 27px;
+			left: 15px;
+			top: 0; 
+			z-index: 1003;
+			}
+		.cpk_origFg {
+			position: absolute;
+			width: 27px;
+			height: 27px;
+			top: 0; 
+			left: 0;
+			background: url('colorDisplay.png') no-repeat 0px 0px;
+			z-index: 1003;
+			}
+	.cpk_curr {}		
+		.cpk_currBg {
+			position: absolute;
+			width: 15px;
+			height: 27px;
+			top: 0; 
+			left: 0;
+			z-index: 1002;
+			}
+		.cpk_currFg {}
+	.cpk_lum {
+		position: absolute;
+		width: 40px;
+		height: 140px;
+		top: 20px;
+		left: 70px;
+		cursor: n-resize;
+		z-index: 1004;
+		}
+	.cpk_sat {
+		position: absolute;
+		width: 140px;
+		height: 40px;
+		top: 70px;
+		left: 20px;
+		cursor: e-resize;
+		z-index: 1004;
+		}
+	.cpk_area {
+		position: absolute;
+		height: 100px;
+		width: 100px;
+		top: 40px;
+		left: 40px;
+		background: #F00 url('colorArea.png') no-repeat 0px 0px;
+		cursor: crosshair;
+		overflow: hidden;
+		z-index: 1006;
+		}
+		.cpk_bMarker,
+		.cpk_wMarker {
+			position: absolute;
+			height: 8px;
+			width: 8px;
+			top: 50px;
+			left: 0;
+			margin: -4px 0 0 -4px;
+			background: url() no-repeat 0px 0px;
+			z-index: 1007;
+			}
+		.cpk_bMarker {background-image: url('colorAreaMarker-b.gif');}
+		.cpk_wMarker {background-image: url('colorAreaMarker-w.gif');} /* << Should take precedence in the cascade */
+	.cpk_accept{
+		display: block;
+		position: absolute;
+		width: 14px;
+		height: 14px;
+		top: 152px;
+		left: 152px;
+		background: url('colorPickerButtons.gif') no-repeat -14px 0px;
+		z-index: 1002;
+		cursor: pointer;
+		}
+	.cpk_accept:hover,
+	.cpk_accept:focus{
+		background-position: -14px -14px;
+		}
+	.cpk_reject{
+		display:block;
+		position: absolute;
+		width: 14px;
+		height: 14px;
+		top: 152px;
+		left: 14px;
+		background: url('colorPickerButtons.gif') no-repeat 0px 0px;
+		z-index: 1002;
+		cursor: pointer;
+		}
+	.cpk_reject:hover,
+	.cpk_reject:focus{
+		background-position: 0 -14px;
+		}

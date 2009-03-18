@@ -1,0 +1,67 @@
+/*** SLIDER STYLES **************************/
+.Slider_wrap {
+	position: relative;
+	float: left;
+	background: url("slider_bg.gif") no-repeat 0px 4px;
+	width: 209px;
+	height: 15px;
+	cursor: pointer;
+	margin-right: 10px;
+	}
+.Slider_active {
+	background-position: -209px 4px;
+	cursor: w-resize;
+	}
+.Slider_disabled {
+	cursor: default;
+	background-position: -418px 4px;
+	}
+.Slider_track {
+	position: absolute;
+	width: 200px;
+	height: 15px;
+	left: 0;
+	top: 0;
+	padding: 0 9px 0 0;	
+	}
+.Slider_handle {
+	position: absolute;
+	width: 9px;
+	height: 15px;
+	background: url("slider_handle1.gif") no-repeat 0px 0px;
+	cursor: w-resize;
+	}
+.Slider_active .Slider_handle,
+.Slider_handle:hover {
+	background-position: -9px 0px;
+	}
+.Slider_disabled .Slider_handle {
+	background-position: -18px 0px;
+	cursor: default;
+	}
+.Slider_input {
+	width: 50px;
+	}
+/* VERTICAL */
+.vSlider_wrap {
+	position: relative;
+	height: 260px;
+	}
+.vSlider_bg {
+	width: 50px;
+	height: 220px;
+	top: 25px;
+	background: url(slider_bg_vert.gif) no-repeat 0px 0px;
+	}
+.vSlider_marker {
+	margin: 3px 3px;
+	cursor: n-resize;
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	background: url(slider_marker.png) no-repeat 0px 0px;
+	}
+.vSlider_input {
+	top: 0;
+	left: 0;
+	}
