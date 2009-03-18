@@ -1,4 +1,4 @@
-/*! jquery.event.drop.js * v1.1 
+/*! jquery.event.drop.js
 Copyright (c) 2008-2009, Three Dub Media (http://threedubmedia.com)  
 Liscensed under the MIT License (http://threedubmedia.googlecode.com/files/MIT-LICENSE.txt)
 */;(function($){ // secure $ jQuery alias
