@@ -1,9 +1,10 @@
-/*! jquery.event.drag.js * v1.4 
-Copyright (c) 2008-2009, Three Dub Media (http://threedubmedia.com)  
-Liscensed under the MIT License (http://threedubmedia.googlecode.com/files/MIT-LICENSE.txt)
-*/;(function($){ // secure $ jQuery alias
+/*! 
+jquery.event.drag.js ~ v1.3 ~ Copyright (c) 2008, Three Dub Media (http://threedubmedia.com)  
+Liscensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-LICENSE.txt
+*/
+;(function($){ // secure $ jQuery alias
 /*******************************************************************************************/
-// Created: 2008-06-04 | Updated: 2009-01-27
+// Created: 2008-06-04 | Updated: 2009-03-24
 /*******************************************************************************************/
 // Events: drag, dragstart, dragend
 /*******************************************************************************************/
@@ -24,6 +25,7 @@ drag = $special.drag = {
 	not: ':input', // don't begin to drag on event.targets that match this selector
 	distance: 0, // distance dragged before dragstart
 	which: 1, // mouse button pressed to start drag sequence
+	dragging: false, // hold the active target element
 	setup: function( data ){
 		data = $.extend({ 
 			distance: drag.distance, 
@@ -32,19 +34,24 @@ drag = $special.drag = {
 			}, data || {});
 		data.distance = squared( data.distance ); //  x² + y² = distance²
 		$event.add( this, "mousedown", handler, data );
+		if ( this.attachEvent ) this.attachEvent("ondragstart", dontStart ); // prevent image dragging in IE...
 		},
 	teardown: function(){
 		$event.remove( this, "mousedown", handler );
-		if ( this === drag.dragging ) drag.dragging = drag.proxy = null; // deactivate element
+		if ( this === drag.dragging ) drag.dragging = drag.proxy = false; // deactivate element
 		selectable( this, true ); // enable text selection
+		if ( this.detachEvent ) this.detachEvent("ondragstart", dontStart ); // prevent image dragging in IE...
 		}
 	};
+	
+// prevent normal event binding...
+$special.dragstart = $special.dragend = { setup:function(){}, teardown:function(){} };
 
 // handle drag-releatd DOM events
 function handler ( event ){ 
 	var elem = this, returned, data = event.data || {};
 	// mousemove or mouseup
-	if ( data.elem ){ 
+	if ( elem === document ){ 
 		// update event properties...
 		elem = event.dragTarget = data.elem; // drag source element
 		event.dragProxy = drag.proxy || elem; // proxy element or source
@@ -54,8 +61,7 @@ function handler ( event ){
 		event.offsetY = event.pageY - event.cursorOffsetY; // element offset
 		}
 	// mousedown, check some initial props to avoid the switch statement
-	else if ( drag.dragging || ( data.which>0 && event.which!=data.which ) || 
-		$( event.target ).is( data.not ) ) return;
+	else if ( drag.dragging || event.which!=1 || $( event.target ).is( data.not ) ) return;
 	// handle various events
 	switch ( event.type ){
 		// mousedown, left click, event.target is not restricted, init dragging
@@ -66,6 +72,7 @@ function handler ( event ){
 				}); // store some initial attributes
 			$event.add( document, "mousemove mouseup", handler, data );
 			selectable( elem, false ); // disable text selection
+			drag.dragging = null; // pending state
 			return false; // prevents text selection in safari 
 		// mousemove, check distance, start dragging
 		case !drag.dragging && 'mousemove': 
@@ -97,27 +104,31 @@ function handler ( event ){
 				hijack( event, "dragend", elem ); // trigger "dragend"	
 				}
 			selectable( elem, true ); // enable text selection
-			drag.dragging = drag.proxy = data.elem = null; // deactivate element
+			drag.dragging = drag.proxy = false; // deactivate element
 			break;
 		} 
+	return true;
 	};
 
 // set event type to custom value, and handle it
 function hijack ( event, type, elem ){
 	event.type = type; // force the event type
-	var result = $event.handle.call( elem, event );
+	var result = $.event.handle.call( elem, event );
 	return result===false ? false : result || event.result;
 	};
 	
 // return the value squared	
 function squared ( value ){ return Math.pow( value, 2 ); };
-	
+
+// suppress default dragstart IE events...
+function dontStart(){ return ( drag.dragging === false ); };	
+
 // toggles text selection attributes	
 function selectable ( elem, bool ){ 
 	if ( !elem ) return; // maybe element was removed ? 
 	elem.unselectable = bool ? "off" : "on"; // IE
 	elem.onselectstart = function(){ return bool; }; // IE
-	if ( document.selection && document.selection.empty ) document.selection.empty(); // IE
+	//if ( document.selection && document.selection.empty ) document.selection.empty(); // IE
 	if ( elem.style ) elem.style.MozUserSelect = bool ? "" : "none"; // FF
 	};	
 	
