@@ -1,5 +1,5 @@
 /*! 
-jquery.event.drag.js ~ v1.5 ~ Copyright (c) 2008, Three Dub Media (http://threedubmedia.com)  
+jquery.event.drag.js ~ v1.6 ~ Copyright (c) 2008, Three Dub Media (http://threedubmedia.com)  
 Liscensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-LICENSE.txt
 */
 ;(function($){ // secure $ jQuery alias
@@ -25,12 +25,14 @@ drag = $special.drag = {
 	not: ':input', // don't begin to drag on event.targets that match this selector
 	distance: 0, // distance dragged before dragstart
 	which: 1, // mouse button pressed to start drag sequence
+	drop: false, // false to suppress drop events
 	dragging: false, // hold the active target element
 	setup: function( data ){
 		data = $.extend({ 
 			distance: drag.distance, 
 			which: drag.which, 
-			not: drag.not
+			not: drag.not,
+			drop: drag.drop
 			}, data || {});
 		data.distance = squared( data.distance ); //  x² + y² = distance²
 		$event.add( this, "mousedown", handler, data );
@@ -90,7 +92,7 @@ function handler ( event ){
 		case 'mousemove': 
 			if ( drag.dragging ){
 				returned = hijack( event, "drag", elem ); // trigger "drag"		
-				if ( $special.drop ){ // manage drop events
+				if ( data.drop && $special.drop ){ // manage drop events
 					$special.drop.allowed = ( returned !== false ); // prevent drop
 					$special.drop.handler( event ); // "dropstart", "dropend"
 					}
@@ -101,7 +103,7 @@ function handler ( event ){
 		case 'mouseup': 
 			$event.remove( document, "mousemove mouseup", handler ); // remove page events
 			if ( drag.dragging ){
-				if ( $special.drop ) $special.drop.handler( event ); // "drop"
+				if ( data.drop && $special.drop ) $special.drop.handler( event ); // "drop"
 				hijack( event, "dragend", elem ); // trigger "dragend"	
 				}
 			selectable( elem, true ); // enable text selection

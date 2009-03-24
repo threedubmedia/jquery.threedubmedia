@@ -5,7 +5,7 @@ jquery.event.drag.js / threedubmedia.com
 
 The MIT License
 
-Copyright (c) 2008, Three Dub Media (threedubmedia@gmail.com)
+Copyright (c) 2008-2009, Three Dub Media (threedubmedia@gmail.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,12 @@ FUTURE ENHANCEMENTS...
  data.handle config
  automagic proxy offsets
  document::mouseleave?
+
+--------------------------------------------------------------------------------
+
+Changes in Version 1.6, NOT Released
+
+- Added explicit param "drop" which decides to call drop events or not.
 
 --------------------------------------------------------------------------------
 
