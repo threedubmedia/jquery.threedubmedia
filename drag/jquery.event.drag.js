@@ -51,7 +51,7 @@ $special.dragstart = $special.dragend = { setup:function(){}, teardown:function(
 function handler ( event ){ 
 	var elem = this, returned, data = event.data || {};
 	// mousemove or mouseup
-	if ( elem === document ){ 
+	if ( data.elem ){ 
 		// update event properties...
 		elem = event.dragTarget = data.elem; // drag source element
 		event.dragProxy = drag.proxy || elem; // proxy element or source
@@ -61,7 +61,8 @@ function handler ( event ){
 		event.offsetY = event.pageY - event.cursorOffsetY; // element offset
 		}
 	// mousedown, check some initial props to avoid the switch statement
-	else if ( drag.dragging || event.which!=1 || $( event.target ).is( data.not ) ) return;
+	else if ( drag.dragging || ( data.which>0 && event.which!=data.which ) || 
+		$( event.target ).is( data.not ) ) return;
 	// handle various events
 	switch ( event.type ){
 		// mousedown, left click, event.target is not restricted, init dragging
