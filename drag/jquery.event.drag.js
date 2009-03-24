@@ -105,7 +105,7 @@ function handler ( event ){
 				hijack( event, "dragend", elem ); // trigger "dragend"	
 				}
 			selectable( elem, true ); // enable text selection
-			drag.dragging = drag.proxy = false; // deactivate element
+			drag.dragging = drag.proxy = data.elem = false; // deactivate element
 			break;
 		} 
 	return true;
