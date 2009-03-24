@@ -1,5 +1,5 @@
 /*! 
-jquery.event.drag.js ~ v1.3 ~ Copyright (c) 2008, Three Dub Media (http://threedubmedia.com)  
+jquery.event.drag.js ~ v1.5 ~ Copyright (c) 2008, Three Dub Media (http://threedubmedia.com)  
 Liscensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-LICENSE.txt
 */
 ;(function($){ // secure $ jQuery alias
