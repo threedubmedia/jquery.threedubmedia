@@ -35,7 +35,12 @@ FUTURE ENHANCEMENTS...
 
 --------------------------------------------------------------------------------
 
-Changes in Version 1.5, NOT Released
+Changes in Version 1.5, Released 2009-03-24
+
+- Added "dragstart" and "dragend" special event configurations which prevents 
+default event bindings in Internet Explorer (some events were firing twice).
+
+- Added a custom "ondragstart" handler for IE only to suppress image/text drags
 
 --------------------------------------------------------------------------------
 
