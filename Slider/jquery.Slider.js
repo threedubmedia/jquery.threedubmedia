@@ -83,9 +83,8 @@ $[ PLUGIN ].create = function( input, opts ){
 			self.dragging = true; 
 			self.$wrap.addClass(opts.activeClass);
 			self.Publish( "start", event ); // "start.PLUGIN"
-			self.$track.triggerHandler( 'drag'+self.NS, event );
 			})
-		.bind('drag'+self.NS, function( event ){
+		.bind('drag'+self.NS, {drop:false}, function( event ){
 			if ( !self.dragging || self.disabled ) return false;
 			var xy = self.X ? 
 				event.pageX - self.$track.offset().left : 
