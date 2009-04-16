@@ -1,8 +1,10 @@
-/*! jquery.event.drop.js
-Copyright (c) 2008-2009, Three Dub Media (http://threedubmedia.com)  
-Liscensed under the MIT License (http://threedubmedia.googlecode.com/files/MIT-LICENSE.txt)
-*/;(function($){ // secure $ jQuery alias
-// Created: 2008-06-04 | Updated: 2009-03-16
+/*! 
+jquery.event.drop.js ~ Copyright (c) 2009, Three Dub Media (http://threedubmedia.com)  
+Liscensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-LICENSE.txt
+*/
+;(function($){ // secure $ jQuery alias
+/*******************************************************************************************/
+// Created: 2008-06-04 | Updated: 2009-04-10
 /*******************************************************************************************/
 // Events: drop, dropstart, dropend
 /*******************************************************************************************/
@@ -25,26 +27,26 @@ $.dropManage = function( opts ){ // return filtered drop target elements, cache 
 	drop.tolerance = opts.tolerance || null;
 	drop.mode = opts.mode || drop.mode || 'intersect';
 	// return the filtered set of drop targets
-	return drop.$targets.filter( drop.filter ).each(function(){ 
+	return $( drop.targets ).filter( drop.filter ).each(function(){ 
 		// locate and store the filtered drop targets
 		drop.data[ drop.data.length ] = drop.locate( this ); 
 		});
 	};
 
-// local refs
-var $event = $.event, $special = $event.special,
-
 // SPECIAL EVENT CONFIGURATION
-drop = $special.drop = {
+var drop = $.event.special["drop"] = {
 	delay: 100, // default frequency to track drop targets
 	mode: 'intersect', // default mode to determine valid drop targets 
-	$targets: $([]), data: [], // storage of drop targets and locations
+	targets: [], data: [], // storage of drop targets and locations
 	setup: function(){
-		drop.$targets = drop.$targets.add( this );
+		drop.targets[ drop.targets.length ] = this;
 		drop.data[ drop.data.length ] = drop.locate( this );
 		},
-	teardown: function(){ var elem = this;
-		drop.$targets = drop.$targets.not( this ); 
+	teardown: function(){ 
+		var elem = this;
+		drop.targets = $.grep( drop.targets, function( target ){ 
+			return ( target !== elem ); 
+			});
 		drop.data = $.grep( drop.data, function( obj ){ 
 			return ( obj.elem !== elem ); 
 			});
@@ -61,7 +63,7 @@ drop = $special.drop = {
 					drop.event = event; // store the mousemove event
 					if ( !drop.timer ) // monitor drop targets
 						drop.timer = setTimeout( tolerate, 20 ); 
-					break;			
+					break;
 				// dragstop/mouseup, from $.event.special.drag
 				case 'mouseup': // DROP >> DROPEND >>
 					drop.timer = clearTimeout( drop.timer ); // delete timer	
@@ -120,14 +122,19 @@ drop = $special.drop = {
 		'middle': function( event, proxy, target ){
 			return this.contains( target, [ proxy.L+proxy.W/2, proxy.T+proxy.H/2 ] ) ? target : null;
 			}
-		} 	 
+		}
+	};
+
+// configure other complimentary events...
+$.event.special["dropstart"] = $.event.special["dropend"] = { 
+	setup: function(){ }, teardown: function(){ } 
 	};
 
 // set event type to custom value, and handle it
 function hijack ( event, type, elem ){
 	event.type = type; // force the event type
-	try { var result = $event.handle.call( elem, event );
-		} catch ( ex ){ /* catch IE error with async event handling */ }	 
+	try { var result = $.event.handle.call( elem, event ); }
+	catch ( ex ){ /* catch IE error with async event handling */ }
 	return result===false ? false : result || event.result;
 	};
 	

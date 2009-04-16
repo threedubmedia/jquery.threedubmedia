@@ -27,6 +27,16 @@ THE SOFTWARE.
 
 --------------------------------------------------------------------------------
 
+Changes in Version 1.3, Not Released
+
+- Changed the internal target cache to a normal array from a jquery object. This
+small change greatly speeds up the event binding. A very noticeable improvement 
+in pages with 100+ drop targets elements.
+
+- Added special event configurations for the complimentary start/end events. 
+
+--------------------------------------------------------------------------------
+
 Changes in Version 1.2, 2009-03-16
 
 - added try/catch block in the private hijak function to fix an error with IE.
