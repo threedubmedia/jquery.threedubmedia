@@ -60,9 +60,12 @@ $.ux = function( name, config ){
 		};
 		
 	// Plugin instance methods
-	Plugin.prototype = config.methods || {};
-	Plugin.destroy = function(){
-		var self = this, elem;
+	Plugin.prototype = $.extend({
+		destroy: function(){ 
+			Plugin.destroy( this ); 
+			}
+		}, config.methods || {});
+	Plugin.destroy = function( self, elem ){
 		// custom destroy function...
 		if ( config.destroy ) 
 			config.destroy.apply( self, arguments );
@@ -103,7 +106,7 @@ $.ux.all = function( method, args ){
 	$.each( $.ux.cache, function( i, Plugin ){
 		if ( Plugin && Plugin.allowed[ method ] )
 			$.each( Plugin.cache, function( j, cached ){
-				if ( cached && cache.instance ) 
+				if ( cached && cached.instance ) 
 					cached.instance[ method ].apply( cached.instance, args );
 				});
 		});
