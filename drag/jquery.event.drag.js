@@ -4,7 +4,7 @@ Liscensed under the MIT License ~ http://threedubmedia.googlecode.com/files/MIT-
 */
 ;(function($){ // secure $ jQuery alias
 /*******************************************************************************************/
-// Created: 2008-06-04 | Updated: 2009-03-24
+// Created: 2008-06-04 | Updated: 2009-04-21
 /*******************************************************************************************/
 // Events: drag, dragstart, dragend
 /*******************************************************************************************/
@@ -76,7 +76,7 @@ function handler ( event ){
 			$event.add( document, "mousemove mouseup", handler, data );
 			selectable( elem, false ); // disable text selection
 			drag.dragging = null; // pending state
-			return false; // prevents text selection in safari 
+			break; // prevents text selection in safari 
 		// mousemove, check distance, start dragging
 		case !drag.dragging && 'mousemove': 
 			if ( squared( event.pageX-data.pageX ) 
@@ -110,7 +110,6 @@ function handler ( event ){
 			drag.dragging = drag.proxy = data.elem = false; // deactivate element
 			break;
 		} 
-	return true;
 	};
 
 // set event type to custom value, and handle it
@@ -129,10 +128,10 @@ function dontStart(){ return ( drag.dragging === false ); };
 // toggles text selection attributes	
 function selectable ( elem, bool ){ 
 	if ( !elem ) return; // maybe element was removed ? 
+	elem = elem.ownerDocument ? elem.ownerDocument : elem;
 	elem.unselectable = bool ? "off" : "on"; // IE
-	elem.onselectstart = function(){ return bool; }; // IE
-	//if ( document.selection && document.selection.empty ) document.selection.empty(); // IE
 	if ( elem.style ) elem.style.MozUserSelect = bool ? "" : "none"; // FF
+	$.event[ bool ? "remove" : "add" ]( elem, "selectstart mousedown", dontStart ); // IE/Opera
 	};	
 	
 /*******************************************************************************************/

@@ -38,6 +38,7 @@ FUTURE ENHANCEMENTS...
 Changes in Version 1.6, NOT Released
 
 - Added explicit param "drop" which decides to call drop events or not.
+- Experimenting with "selectable" settings on body instead of element
 
 --------------------------------------------------------------------------------
 
