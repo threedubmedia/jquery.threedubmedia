@@ -1,15 +1,15 @@
 /*! 
- * jquery.event.drop - v 2.0.0 
+ * jquery.event.drop - v 2.1.0 
  * Copyright (c) 2010 Three Dub Media - http://threedubmedia.com
  * Open Source MIT License - http://threedubmedia.com/code/license
  */
 // Created: 2008-06-04 
-// Updated: 2010-06-08
-// REQUIRES: jquery 1.4.2+, jquery.event.drag 2+
+// Updated: 2010-09-03
+// REQUIRES: jquery 1.4.2+, event.drag 2.1+
 
 ;(function($){ // secure $ jQuery alias
 
-// Events: drop, dropinit, dropstart, dropend
+// Events: drop, dropstart, dropend
 
 // add the jquery instance method
 $.fn.drop = function( str, arg, opts ){
@@ -55,21 +55,13 @@ drop = $.event.special.drop = {
 	
 	// the key name for stored drop data
 	datakey: "dropdata",
-	
-	// the namespace for internal live events
-	livekey: "livedrop",
-	
+		
 	// count bound related events
 	add: function( obj ){ 
 		// read the interaction data
 		var data = $.data( this, drop.datakey );
 		// count another realted event
 		data.related += 1;
-		// bind the live "dropinit" delegator
-		if ( !data.live && obj.selector ){
-			data.live = true;
-			$event.add( this, "dropinit."+ drop.livekey, drop.delegate );
-		}
 	},
 	
 	// forget unbound related events
@@ -103,8 +95,6 @@ drop = $.event.special.drop = {
 			return;
 		// remove the stored data
 		$.removeData( this, drop.datakey );
-		// remove the "live" delegation
-		$event.remove( this, "dropinit", drop.delegate );
 		// reference the targeted element
 		var element = this;
 		// remove from the internal cache
@@ -124,6 +114,7 @@ drop = $.event.special.drop = {
 		switch ( event.type ){
 			// draginit, from $.event.special.drag
 			case 'mousedown': // DROPINIT >>
+			case 'touchstart': // DROPINIT >>
 				// collect and assign the drop targets
 				$targets =  $( drop.targets );
 				if ( typeof dd.drop == "string" )
@@ -137,15 +128,12 @@ drop = $.event.special.drop = {
 				});
 				// set available target elements
 				dd.droppable = $targets;
-				// hold any live elements 
-				drop.delegates = [];
 				// activate drop targets for the initial element being dragged
 				$special.drag.hijack( event, "dropinit", dd ); 
-				// flatten all the live elements
-				drop.delegates = $.unique( $special.drag.flatten( drop.delegates ) );
 				break;
 			// drag, from $.event.special.drag
 			case 'mousemove': // TOLERATE >>
+			case 'touchmove': // TOLERATE >>
 				drop.event = event; // store the mousemove event
 				if ( !drop.timer )
 					// monitor drop targets
@@ -153,48 +141,17 @@ drop = $.event.special.drop = {
 				break;
 			// dragend, from $.event.special.drag
 			case 'mouseup': // DROP >> DROPEND >>
+			case 'touchend': // DROP >> DROPEND >>
 				drop.timer = clearTimeout( drop.timer ); // delete timer	
 				if ( dd.propagates ){
 					$special.drag.hijack( event, "drop", dd ); 
 					$special.drag.hijack( event, "dropend", dd ); 
-					// cleanout live events...
-					$.each( drop.delegates || [], function(){
-						$event.remove( this, '.'+ drop.livekey );							
-					});
 				}
 				break;
+				
 		}
 	},
-	
-	// identify potential delegate elements
-	delegate: function( event ){
-		// local refs
-		var elems = [], $targets, 
-		// element event structure
-		events = $.data( this, "events" ) || {};
-		// query live events
-		$.each( events.live || [], function( i, obj ){
-			// no event type matches
-			if ( obj.preType.indexOf("drop") !== 0 )
-				return;
-			// locate the elements to delegate
-			$targets = $( event.currentTarget ).find( obj.selector );
-			// no element found
-			if ( !$targets.length ) 
-				return;
-			// take each target...
-			$targets.each(function(){
-				// add an event handler
-				$event.add( this, obj.origType +'.'+ drop.livekey, obj.origHandler, obj.data );
-				// remember new elements
-				if ( $.inArray( this, elems ) < 0 )
-					elems.push( this );	
-			});	
-		});
-		drop.delegates.push( elems );
-		return elems.length ? $( elems ) : false;
-	},
-	
+		
 	// returns the location positions of an element
 	locate: function( elem, index ){ 
 		var data = $.data( elem, drop.datakey ),
