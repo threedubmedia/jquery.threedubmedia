@@ -1,11 +1,13 @@
-/*! Copyright (c) 2008, Three Dub Media (http://threedubmedia.com)  */
-;(function($){ // secure $ jQuery alias
-/*******************************************************************************************/	
-// jquery.event.wheel.js - rev 2 
-// Liscensed under the MIT License 
-// http://www.opensource.org/licenses/mit-license.php
-// Created: 2008-07-01 | Updated: 2008-10-08
-/*******************************************************************************************/
+/*! 
+ * jquery.event.wheel - v 1.0.0 - http://jquery-ux.com/
+ * Copyright (c) 2010 Michael Helgeson, Three Dub Media
+ * Open Source MIT License - http://jquery-ux.com/license 
+ */
+// Created: 2008-07-01
+// Updated: 2010-01-08
+// REQUIRES: jquery 1.3+
+
+;(function( $ ){ // secure $ jQuery alias
 
 // jquery method
 $.fn.wheel = function( fn ){
@@ -30,12 +32,12 @@ var wheelEvents = "DOMMouseScroll mousewheel" // IE, opera, safari, firefox
 function wheelHandler( event ){ 
 	switch ( event.type ){
 		case "mousewheel": // IE, opera, safari
-			event.delta = event.wheelDelta/120; // normalize delta
-			if ( window.opera ) event.delta *= -1; // normalize delta
+			event.delta = event.wheelDelta/120; 
+			if ( window.opera ) event.delta *= -1; 
 			break;
 		case "DOMMouseScroll": // firefox
 			$.extend( event, event.data ); // fix event properties in FF2
-			event.delta = -event.detail/3; // normalize delta
+			event.delta = -event.detail/3; 
 			break;
 		case "mousemove": // FF2 has incorrect event positions
 			return $.extend( event.data, { // store the correct properties
@@ -47,5 +49,4 @@ function wheelHandler( event ){
 	return $.event.handle.call( this, event, event.delta );
 	};
 	
-/*******************************************************************************************/
-})(jQuery); // confine scope
+})( jQuery ); // confine scope
