@@ -1,9 +1,11 @@
-test("Event Binding",function(){
+module("Event Binding");
+
+$.each(['dropinit','dropstart','drop','dropend'],function( i, type ){
 	
-	expect( 36 );
+	test('"'+ type +'"',function(){
 	
-	$.each(['dropinit','dropstart','drop','dropend'],function( i, type ){
-	
+		expect( 9 );
+		
 		// make sure the event handler gets bound to the element
 		var $elem = $('<div />'), 
 		elem = $elem[0],
@@ -12,15 +14,15 @@ test("Event Binding",function(){
 			count += 1;
 		};
 		
-		ok( $elem.bind( type, fn )[0] == elem, ".bind('"+ type +"', fn )" );
+		ok( $elem.bind( type, fn )[0] == elem, '.bind("'+ type +'", fn )' );
 		ok( $.data( elem, $.event.special.drop.datakey ), "drop data exists" );
 		ok( $.data( elem, "events" ), "event data exists" );
-		ok( $.data( elem, "events" )[ type ][0], type +" event handler added" );
+		ok( $.data( elem, "events" )[ type ][0], '"'+ type +'" event handler added' );
 		
-		ok( $elem.trigger( type )[0] == elem, ".trigger('"+ type +"')" );
+		ok( $elem.trigger( type )[0] == elem, '.trigger("'+ type +'")' );
 		ok( count == 1, "handler was triggered");
 		
-		ok( $elem.unbind( type )[0] == elem, ".unbind('"+ type +"')" );
+		ok( $elem.unbind( type )[0] == elem, '.unbind("'+ type +'")' );
 		ok( !$.data( elem, "events" ), "event data removed" );
 		ok( !$.data( elem, $.event.special.drop.datakey ), "drop data removed" );
 		

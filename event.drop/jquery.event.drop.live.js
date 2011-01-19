@@ -38,8 +38,14 @@ drop.add = function( obj ){
 drop.teardown = function(){ 
 	// call the old method
 	origteardown.apply( this, arguments );
-	// remove the "live" delegation
-	$event.remove( this, "dropinit", drop.delegate );
+	// read the data
+	var data = $.data( this, drop.datakey ) || {};
+	// remove the live "dropinit" delegator
+	if ( data.live ){
+		// remove the "live" delegation
+		$event.remove( this, "dropinit", drop.delegate );
+		data.live = false;
+	}
 };
 
 // identify potential delegate elements

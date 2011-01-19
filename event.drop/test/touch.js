@@ -1,7 +1,14 @@
 ;(function(){
 	
-	module("Mouse Interaction");	
-	
+	module("Touch Interaction");
+
+	if ( !document.createEvent ){
+		test("Touch Simulation Not Supported",function(){
+			ok( true, 'This browser does not support "document.createEvent" and cannot simulate touch events.');	
+		});
+		return;
+	}
+
 	// a simple re-usable test harness object
 	var obj = {
 		init: function( opts ){
@@ -35,7 +42,7 @@
 				click:0 
 			});
 		},
-		mouse: function(){
+		touch: function(){
 			var start = {
 				pageX: Math.round( Math.random() * 90 ) + 5,
 				pageY: Math.round( Math.random() * 90 ) + 5
@@ -46,9 +53,9 @@
 			};
 			// simulate a complete mouse drag
 			obj.$drag
-				.fire("mousedown", start )
-				.fire("mousemove", end )
-				.fire("mouseup", end )
+				.fire("touchstart", start )
+				.fire("touchmove", end )
+				.fire("touchend", end )
 				.fire("click", end );
 		},
 		done: function(){
@@ -62,7 +69,7 @@
 		// prep DEFAULT interaction
 		obj.init();
 		// simulate DEFAULT interaction
-		obj.mouse();
+		obj.touch();
 		// inspect results	
 		equals( obj.draginit, 1, "draginit");
 		equals( obj.dragstart, 1, "dragstart");
@@ -80,7 +87,7 @@
 		// prep interaction
 		obj.init({ drop:false });
 		// simulate drag
-		obj.mouse();
+		obj.touch();
 		// inspect results		
 		equals( obj.draginit, 1, "draginit");
 		equals( obj.dragstart, 1, "dragstart");
@@ -98,7 +105,7 @@
 		// prep interaction
 		obj.init({ drop:'body' });
 		// simulate drag
-		obj.mouse();
+		obj.touch();
 		// inspect results		
 		equals( obj.draginit, 1, "draginit");
 		equals( obj.dragstart, 1, "dragstart");
@@ -116,7 +123,7 @@
 		// prep interaction
 		obj.init({ drop:'div' });
 		// simulate drag
-		obj.mouse();
+		obj.touch();
 		// inspect results		
 		equals( obj.draginit, 1, "draginit");
 		equals( obj.dragstart, 1, "dragstart");
@@ -129,6 +136,5 @@
 		// continue
 		obj.done();
 	});
-	
-})();
 
+})();

@@ -90,8 +90,9 @@ drop = $.event.special.drop = {
 	
 	// destroy the configure interaction	
 	teardown: function(){ 
+		var data = $.data( this, drop.datakey ) || {};
 		// check for related events
-		if ( $.data( this, drop.datakey ).related ) 
+		if ( data.related ) 
 			return;
 		// remove the stored data
 		$.removeData( this, drop.datakey );
