@@ -1,164 +1,160 @@
-test("Event Handlers",function(){
-					
-	expect( 35 );
+;(function(){
 	
-	// create the markup for the tests
-	var $div = $('<div />')
-		.css({
-			position: 'absolute',
-			top: 0,
-			left: 0,
-			height: 100,
-			width: 100
-		})
-		.appendTo( document.body )
-		.bind("draginit dragstart drag dragend click", function( event ){
-			counts[ event.type ] += 1;
-			if ( extratest[ event.type ] )
-				extratest[ event.type ].apply( this, arguments );
-			return returned[ event.type ];
-		}),
-	counts, extratest, returned, 
-	reset = function(){
-		counts = { draginit:0, dragstart:0, drag:0, dragend:0 };
-		extratest = {};
-		returned = {};
+	module("Event Handlers");
+
+	// a simple re-usable test harness object
+	var obj = {
+		init: function( opts ){
+			obj.$div = 	$('<div />')
+				.css({
+					position: 'absolute',
+					top: 0,
+					left: 0,
+					height: 100,
+					width: 100
+				})
+				.appendTo( document.body )
+				.bind("draginit dragstart drag dragend click", opts || {}, function( event ){
+					obj[ event.type ] += 1;
+					if ( obj.extra[ event.type ] )
+						obj.extra[ event.type ].apply( this, arguments );
+					return obj.returned[ event.type ];
+				});
+			
+			$.extend( obj, { draginit:0, dragstart:0, drag:0, dragend:0, click:0 });
+			obj.extra = {};
+			obj.returned = {};
+		},
+		mouse: function(){
+			var start = {
+				pageX: Math.round( Math.random() * 90 ) + 5,
+				pageY: Math.round( Math.random() * 90 ) + 5
+			},
+			end = {
+				pageX: Math.round( Math.random() * 90 ) + start.pageX,
+				pageY: Math.round( Math.random() * 90 ) + start.pageY
+			};
+			// simulate a complete mouse drag
+			obj.$div
+				.fire("mousedown", start )
+				.fire("mousemove", end )
+				.fire("mouseup", end )
+				.fire("click", end );
+		},
+		done: function( ms ){
+			obj.$div.remove();
+			start();
+		}
 	};
-	
+			
 	// test DRAGINIT FALSE
-	setTimeout(function(){
-		ok( true, 'DRAGINIT returns false...' );
+	asyncTest('"draginit" return false',function(){
+		expect( 5 );		
 		// test prep
-		reset();
-		returned.draginit = false;
-		// simulate a partial drag
-		$div.fire("mousedown",{ clientX:50, clientY:50 })
-			.fire("mousemove",{ clientX:51, clientY:51 })
-			.trigger("click");
+		obj.init();
+		obj.returned['draginit'] = false;
+		// simulate a mouse drag
+		obj.mouse();
 		// check counts
-		equals( counts.draginit, 1, "draginit");
-		equals( counts.dragstart, 0, "dragstart");
-		equals( counts.drag, 0, "drag");
-		equals( counts.dragend, 0, "dragend");
+		equals( obj.draginit, 1, "draginit fired");
+		equals( obj.dragstart, 0, "dragstart did not fire");
+		equals( obj.drag, 0, "drag did not fire");
+		equals( obj.dragend, 0, "dragend did not fire");
+		equals( obj.click, 1, "click fired");
 		// continue
-		start();	
-	}, 20 );
-	stop();
-	
-	// test DRAGSTART FALSE
-	setTimeout(function(){
-		ok( true, 'DRAGSTART returns false...' );				
+		obj.done();	
+	});
+
+	asyncTest('"dragstart" return false',function(){
+		expect( 5 );
 		// test prep
-		reset();
-		returned.dragstart = false;
-		// simulate a partial drag
-		$div.fire("mousedown",{ clientX:50, clientY:50 })
-			.fire("mousemove",{ clientX:51, clientY:51 })
-			.trigger("click");
+		obj.init();
+		obj.returned['dragstart'] = false;
+		// simulate a mouse drag
+		obj.mouse();
 		// check counts
-		equals( counts.draginit, 1, "draginit");
-		equals( counts.dragstart, 1, "dragstart");
-		equals( counts.drag, 0, "drag");
-		equals( counts.dragend, 0, "dragend");
+		equals( obj.draginit, 1, "draginit fired");
+		equals( obj.dragstart, 1, "dragstart fired");
+		equals( obj.drag, 0, "drag did not fire");
+		equals( obj.dragend, 0, "dragend did not fire");
+		equals( obj.click, 1, "click fired");
 		// continue
-		start();
-	}, 20 );
-	stop();
-	
-	// test DRAG FALSE
-	setTimeout(function(){
-		ok( true, 'DRAG returns false...' );				
+		obj.done();	
+	});
+
+	asyncTest('"drag" return false',function(){
+		expect( 5 );
 		// test prep
-		reset();
-		returned.drag = false;
-		// simulate a partial drag
-		$div.fire("mousedown",{ clientX:50, clientY:50 })
-			.fire("mousemove",{ clientX:51, clientY:51 })
-			.trigger("click");
+		obj.init();
+		obj.returned['drag'] = false;
+		// simulate a mouse drag
+		obj.mouse();
 		// check ocunts
-		equals( counts.draginit, 1, "draginit");
-		equals( counts.dragstart, 1, "dragstart");
-		equals( counts.drag, 1, "drag");
-		equals( counts.dragend, 1, "dragend");
+		equals( obj.draginit, 1, "draginit fired");
+		equals( obj.dragstart, 1, "dragstart fired");
+		equals( obj.drag, 1, "drag fired");
+		equals( obj.dragend, 1, "dragend fired");
+		equals( obj.click, 0, "click did not fire");
 		// continue
-		start();
-	}, 20 );
-	stop();
-	
-	// test DRAGINIT ELEMENT
-	setTimeout(function(){
-		ok( true, 'DRAGINIT returns different element...' );
+		obj.done();	
+	});
+
+	asyncTest('"draginit" return new element',function(){
+		expect( 8 );
 		// test prep
-		reset();
-		var $clone = returned.draginit = $div.clone( true );
-		extratest.dragstart = extratest.drag = extratest.dragend = function( ev, dd ){
+		obj.init();
+		var $clone = obj.returned['draginit'] = obj.$div.clone( true );
+		obj.extra['dragstart'] = obj.extra['drag'] = obj.extra['dragend'] = function( ev, dd ){
 			ok( dd.drag === $clone[0], ev.type +' target element' );
 		};
-		// simulate a complete drag
-		$div.fire("mousedown",{ clientX:50, clientY:50 })
-			.fire("mousemove",{ clientX:51, clientY:51 })
-			.fire("mouseup",{ clientX:51, clientY:51 })
-			.trigger("click");
+		// simulate a mouse drag
+		obj.mouse();
 		// check counts
-		equals( counts.draginit, 1, "draginit");
-		equals( counts.dragstart, 1, "dragstart");
-		equals( counts.drag, 1, "drag");
-		equals( counts.dragend, 1, "dragend");
+		equals( obj.draginit, 1, "draginit fired");
+		equals( obj.dragstart, 1, "dragstart fired");
+		equals( obj.drag, 1, "drag fired");
+		equals( obj.dragend, 1, "dragend fired");
+		equals( obj.click, 0, "click did not fire");
 		// continue
-		start();
-	}, 20 );
-	stop();
-	
-	// test DRAGINIT ELEMENTS
-	setTimeout(function(){
-		ok( true, 'DRAGINIT returns two elements...' );
+		obj.done();	
+	});
+
+	asyncTest('"draginit" return multiple elements',function(){
+		expect( 5 );
 		// test prep
-		reset();
-		returned.draginit = $div.clone( true ).add( $div );
-		// simulate a complete drag
-		$div.fire("mousedown",{ clientX:50, clientY:50 })
-			.fire("mousemove",{ clientX:51, clientY:51 })
-			.fire("mouseup",{ clientX:51, clientY:51 })
-			.trigger("click");
+		obj.init();
+		obj.returned['draginit'] = obj.$div.clone( true ).add( obj.$div );
+		// simulate a mouse drag
+		obj.mouse();
 		// check counts
-		equals( counts.draginit, 1, "draginit");
-		equals( counts.dragstart, 2, "dragstart");
-		equals( counts.drag, 2, "drag");
-		equals( counts.dragend, 2, "dragend");
+		equals( obj.draginit, 1, "draginit fired once");
+		equals( obj.dragstart, 2, "dragstart fired twice");
+		equals( obj.drag, 2, "drag fired twice");
+		equals( obj.dragend, 2, "dragend fired twice");
+		equals( obj.click, 0, "click did not fire");
 		// continue
-		start();
-	}, 20 );
-	stop();
-	
-	// test DRAGSTART PROXY
-	setTimeout(function(){
-		ok( true, 'DRAGSTART returns proxy element...' );
+		obj.done();	
+	});
+
+
+	asyncTest('"dragstart" return proxy element',function(){
+		expect( 7 );
 		// test prep
-		reset();
-		var $proxy = returned.dragstart = $div.clone().addClass('proxy');
-		extratest.drag = extratest.dragend = function( ev, dd ){
+		obj.init();
+		var $proxy = obj.returned['dragstart'] = obj.$div.clone().addClass('proxy');
+		obj.extra['drag'] = obj.extra['dragend'] = function( ev, dd ){
 			ok( dd.proxy === $proxy[0], ev.type +' proxy element' );
 		};
-		// simulate a complete drag
-		$div.fire("mousedown",{ clientX:50, clientY:50 })
-			.fire("mousemove",{ clientX:51, clientY:51 })
-			.fire("mouseup",{ clientX:51, clientY:51 })
-			.trigger("click");
+		// simulate a mouse drag
+		obj.mouse();
 		// check counts	
-		equals( counts.draginit, 1, "draginit");
-		equals( counts.dragstart, 1, "dragstart");
-		equals( counts.drag, 1, "drag");
-		equals( counts.dragend, 1, "dragend");
+		equals( obj.draginit, 1, "draginit");
+		equals( obj.dragstart, 1, "dragstart");
+		equals( obj.drag, 1, "drag");
+		equals( obj.dragend, 1, "dragend");
+		equals( obj.click, 0, "click did not fire");
 		// continue
-		start();
-	}, 20 );
-	stop();
-	
-	// test clean-up
-	setTimeout(function(){
-		$div.remove();
-		start();
-	}, 20 );
-	stop();
-	
-});
+		obj.done();	
+	});
+
+})();

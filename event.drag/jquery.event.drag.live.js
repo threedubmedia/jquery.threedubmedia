@@ -27,7 +27,7 @@ drag.add = function( obj ){
 	origadd.apply( this, arguments );
 	// read the data
 	var data = $.data( this, drag.datakey );
-	// bind the live "dropinit" delegator
+	// bind the live "draginit" delegator
 	if ( !data.live && obj.selector ){
 		data.live = true;
 		$event.add( this, "draginit."+ drag.livekey, drag.delegate );
@@ -38,8 +38,14 @@ drag.add = function( obj ){
 drag.teardown = function(){ 
 	// call the old method
 	origteardown.apply( this, arguments );
-	// remove the "live" delegation
-	$event.remove( this, "draginit", drag.delegate );
+	// read the data
+	var data = $.data( this, drag.datakey ) || {};
+	// bind the live "draginit" delegator
+	if ( data.live ){
+		// remove the "live" delegation
+		$event.remove( this, "draginit."+ drag.livekey, drag.delegate );
+		data.live = false;
+	}
 };
 
 // identify potential delegate elements

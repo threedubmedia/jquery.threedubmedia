@@ -1,6 +1,13 @@
 ;(function(){
 	
-	module("Mouse Interaction");
+	module("Touch Interaction");
+
+	if ( !document.createEvent ){
+		test("Touch Simulation Not Supported",function(){
+			ok( true, 'This browser does not support "document.createEvent" and cannot simulate touch events.');	
+		});
+		return;
+	}
 
 	// a simple re-usable test harness object
 	var obj = {
@@ -16,7 +23,7 @@
 				.append('<div class="child" />')
 				.appendTo( document.body )
 				.bind("draginit dragstart drag dragend click", opts || {}, function( event ){
-					obj[ event.type ] += 1;
+					obj[ event.type ] += 1;					
 				});
 			$.extend( obj, { draginit:0, dragstart:0, drag:0, dragend:0, click:0 });
 		},
@@ -32,9 +39,9 @@
 		obj.init();
 		// simulate DEFAULT interaction
 		obj.$div
-			.fire("mousedown",{ pageX:50, pageY:50 })
-			.fire("mousemove",{ pageX:51, pageY:51 })
-			.fire("mouseup",{ pageX:51, pageY:51 })
+			.fire("touchstart",{ pageX:50, pageY:50 })
+			.fire("touchmove",{ pageX:51, pageY:51 })
+			.fire("touchend",{ pageX:51, pageY:51 })
 			.fire("click");
 		// inspect results	
 		equals( obj.draginit, 1, "draginit");
@@ -52,9 +59,9 @@
 		obj.init({ not:'.child' });
 		// simulate NOT interaction
 		obj.$div.children()
-			.fire("mousedown",{ pageX:50, pageY:50 })
-			.fire("mousemove",{ pageX:51, pageY:51 })
-			.fire("mouseup",{ pageX:51, pageY:51 })
+			.fire("touchstart",{ pageX:50, pageY:50 })
+			.fire("touchmove",{ pageX:51, pageY:51 })
+			.fire("touchend",{ pageX:51, pageY:51 })
 			.fire("click");
 		// inspect results		
 		equals( obj.draginit, 0, "draginit");
@@ -64,9 +71,9 @@
 		equals( obj.click, 1, "click");
 		// simlate NON NOT interaction
 		obj.$div
-			.fire("mousedown",{ pageX:50, pageY:50 })
-			.fire("mousemove",{ pageX:51, pageY:51 })
-			.fire("mouseup",{ pageX:51, pageY:51 })
+			.fire("touchstart",{ pageX:50, pageY:50 })
+			.fire("touchmove",{ pageX:51, pageY:51 })
+			.fire("touchend",{ pageX:51, pageY:51 })
 			.fire("click");
 		// inspect results		
 		equals( obj.draginit, 1, "draginit");
@@ -84,9 +91,9 @@
 		obj.init({ handle:'.child' });
 		// simulate HANDLE interaction
 		obj.$div.children()
-			.fire("mousedown",{ pageX:50, pageY:50 })
-			.fire("mousemove",{ pageX:51, pageY:51 })
-			.fire("mouseup",{ pageX:51, pageY:51 })
+			.fire("touchstart",{ pageX:50, pageY:50 })
+			.fire("touchmove",{ pageX:51, pageY:51 })
+			.fire("touchend",{ pageX:51, pageY:51 })
 			.fire("click");
 		// inspect results		
 		equals( obj.draginit, 1, "draginit");
@@ -96,9 +103,9 @@
 		equals( obj.click, 0, "click");	
 		// simulate NON HANDLE interaction
 		obj.$div
-			.fire("mousedown",{ pageX:50, pageY:50 })
-			.fire("mousemove",{ pageX:51, pageY:51 })
-			.fire("mouseup",{ pageX:51, pageY:51 })
+			.fire("touchstart",{ pageX:50, pageY:50 })
+			.fire("touchmove",{ pageX:51, pageY:51 })
+			.fire("touchend",{ pageX:51, pageY:51 })
 			.fire("click");
 		// inspect results		
 		equals( obj.draginit, 1, "draginit");
@@ -111,14 +118,14 @@
 	});
 	
 	asyncTest('"which" option',function(){
-		expect( 10 );
+		expect( 11 );
 		// prep interaction
-		obj.init({ which:3 });
+		obj.init({ which:0 });
 		// simulate WHICH interaction
 		obj.$div
-			.fire("mousedown",{ pageX:50, pageY:50, button:2 })
-			.fire("mousemove",{ pageX:51, pageY:51 })
-			.fire("mouseup",{ pageX:51, pageY:51 })
+			.fire("touchstart",{ pageX:50, pageY:50, button:5 })
+			.fire("touchmove",{ pageX:51, pageY:51 })
+			.fire("touchend",{ pageX:51, pageY:51 })
 			.fire("click");
 		// inspect results
 		equals( obj.draginit, 1, "draginit");
@@ -126,18 +133,19 @@
 		equals( obj.drag, 1, "drag");
 		equals( obj.dragend, 1, "dragend");
 		equals( obj.click, 0, "click");	
+		ok( true, '"which" not supported with touch events...');
 		// simulate NON WHICH interaction
 		obj.$div
-			.fire("mousedown",{ pageX:50, pageY:50 })
-			.fire("mousemove",{ pageX:51, pageY:51 })
-			.fire("mouseup",{ pageX:51, pageY:51 })
+			.fire("touchstart",{ pageX:50, pageY:50 })
+			.fire("touchmove",{ pageX:51, pageY:51 })
+			.fire("touchend",{ pageX:51, pageY:51 })
 			.fire("click");
 		// inspect results
-		equals( obj.draginit, 1, "draginit");
-		equals( obj.dragstart, 1, "dragstart");
-		equals( obj.drag, 1, "drag");
-		equals( obj.dragend, 1, "dragend");
-		equals( obj.click, 1, "click");
+		equals( obj.draginit, 2, "draginit");
+		equals( obj.dragstart, 2, "dragstart");
+		equals( obj.drag, 2, "drag");
+		equals( obj.dragend, 2, "dragend");
+		equals( obj.click, 0, "click");
 		// clean-up interaction
 		obj.done();
 	});	
@@ -148,9 +156,9 @@
 		obj.init({ distance:5 });
 		// simulate NON DISTANCE interaction
 		obj.$div
-			.fire("mousedown",{ pageX:50, pageY:50 })
-			.fire("mousemove",{ pageX:51, pageY:51 })
-			.fire("mouseup",{ pageX:51, pageY:51 })
+			.fire("touchstart",{ pageX:50, pageY:50 })
+			.fire("touchmove",{ pageX:51, pageY:51 })
+			.fire("touchend",{ pageX:51, pageY:51 })
 			.fire("click");
 		// inspect results		
 		equals( obj.draginit, 1, "draginit");
@@ -160,9 +168,9 @@
 		equals( obj.click, 1, "click");	
 		// simulate DISTANCE interaction
 		obj.$div
-			.fire("mousedown",{ pageX:50, pageY:50 })
-			.fire("mousemove",{ pageX:53, pageY:54 })
-			.fire("mouseup",{ pageX:53, pageY:54 })
+			.fire("touchstart",{ pageX:50, pageY:50 })
+			.fire("touchmove",{ pageX:53, pageY:54 })
+			.fire("touchend",{ pageX:53, pageY:54 })
 			.fire("click");
 		// inspect results		
 		equals( obj.draginit, 2, "draginit");
@@ -181,9 +189,9 @@
 		obj.init({ click:true });
 		// simulate CLICK interaction
 		obj.$div
-			.fire("mousedown",{ pageX:50, pageY:50 })
-			.fire("mousemove",{ pageX:51, pageY:51 })
-			.fire("mouseup",{ pageX:51, pageY:51 })
+			.fire("touchstart",{ pageX:50, pageY:50 })
+			.fire("touchmove",{ pageX:51, pageY:51 })
+			.fire("touchend",{ pageX:51, pageY:51 })
 			.fire("click");
 		// inspect results	
 		equals( obj.draginit, 1, "draginit");
@@ -194,5 +202,5 @@
 		// clean-up interaction
 		obj.done();
 	});
-	
+
 })();

@@ -1,18 +1,24 @@
-module("EVENT.DRAG");
+module("Requirements");
 
-test("Requirements",function(){
+test("jQuery",function(){
 	
-	expect( 7 );
+	expect( 2 );
 	
 	// make sure the right jquery is included
 	ok( window.jQuery, "jQuery exists" );
-	ok( parseFloat( jQuery([]).jquery ) >= 1.4, "jQuery version is 1.4 or greater" );
-				
+	ok( parseFloat( jQuery([]).jquery ) >= 1.5, "jQuery version is 1.5 or greater" );
+
+});
+
+test("Installation",function(){
+	
+	expect( 5 );
+	
 	// make sure the event interface is complete
-	ok( jQuery.event.special.draginit, "DRAGINIT special event is defined" );
-	ok( jQuery.event.special.dragstart, "DRAGSTART special event is defined" );
-	ok( jQuery.event.special.drag, "DRAG special event is defined" );
-	ok( jQuery.event.special.dragend, "DRAGEND special event is defined" );
-	ok( jQuery([]).drag, "$('...').drag() method is defined" );
+	ok( jQuery.event.special.draginit, '"draginit" special event is defined' );
+	ok( jQuery.event.special.dragstart, '"dragstart" special event is defined' );
+	ok( jQuery.event.special.drag, '"drag" special event is defined' );
+	ok( jQuery.event.special.dragend, '"dragend" special event is defined' );
+	ok( jQuery([]).drag, "$.fn.drag method is defined" );
 	
 });

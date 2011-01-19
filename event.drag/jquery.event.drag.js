@@ -83,8 +83,9 @@ drag = $special.drag = {
 	
 	// destroy configured interaction
 	teardown: function(){
+		var data = $.data( this, drag.datakey ) || {};
 		// check for related events
-		if ( $.data( this, drag.datakey ).related ) 
+		if ( data.related ) 
 			return;
 		// remove the stored data
 		$.removeData( this, drag.datakey );
