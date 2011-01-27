@@ -74,6 +74,11 @@ $.fire.prototype = {
 			);
 			$.extend( event, { 
 				view: opts.view,
+				detail: opts.detail,
+				screenX: opts.screenX, 
+				screenY: opts.screenY, 
+				clientX: opts.clientX, 
+				clientY: opts.clientY,
 				ctrlKey: opts.ctrlKey, 
 				altKey: opts.altKey, 
 				shiftKey: opts.shiftKey, 
