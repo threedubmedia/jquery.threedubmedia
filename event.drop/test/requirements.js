@@ -6,7 +6,7 @@ test("jQuery",function(){
 	
 	// make sure the right jquery is included
 	ok( window.jQuery, "jQuery exists" );
-	ok( parseFloat( jQuery([]).jquery ) >= 1.5, "jQuery version is 1.5 or greater" );
+	ok( parseFloat( jQuery([]).jquery ) >= 1.4, "jQuery version is 1.4 or greater" );
 });
 
 test("$.event.special.drag",function(){
