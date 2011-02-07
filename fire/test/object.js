@@ -1,9 +1,9 @@
-module("DOM Events");
+module("Object/Frame Events");
 
 // test each of the following events
 $.each([
-	"focus","blur","change","scroll","resize",
-	"error","load","unload","submit","select"
+	"abort","scroll","resize",
+	"error","load","unload"
 ],function( i, type ){
 	// test each event type
 	test( '"'+ type +'"', function(){
