@@ -1,8 +1,22 @@
-;(function($){
+;(function( $, window ){
+
+/*
+	http://www.w3.org/TR/DOM-Level-3-Events/#event-type-wheel
+*/
 
 // jQuery method
 $.fn.fire = function( type, opts ){
+	// translate pageX to clientX
+	if ( opts.pageX && !opts.clientX )	
+		opts.clientX = opts.pageX - $( window ).scrollLeft();
+	// translate pageY to clientY
+	if ( opts.pageY && !opts.clientY )	
+		opts.clientY = opts.pageY - $( window ).scrollTop();
+	// iterate the jquery collection	
 	return this.each(function(){
+		// clone options uniquely for each instance
+		opts = $.extend( {}, $.fire.defaults, opts );
+		// instanitate a new event
 		new $.fire( this, type, opts );
 	});
 };		   
@@ -11,14 +25,7 @@ $.fn.fire = function( type, opts ){
 $.fire = function( element, type, opts ){
 	this.element = element;
 	this.type = type;
-	this.opts = $.extend( {}, $.fire.defaults, opts );
-	// translate pageX to clientX
-	if ( this.opts.pageX && !this.opts.clientX )	
-		this.opts.clientX = this.opts.pageX - $( window ).scrollLeft();
-	// translate pageY to clientY
-	if ( this.opts.pageY && !this.opts.clientY )	
-		this.opts.clientY = this.opts.pageY - $( window ).scrollTop();
-	this.event = this.create( type, opts );
+	this.event = this.create( opts );
 	this.dispatch();
 };
 
@@ -41,10 +48,10 @@ $.fire.defaults = {
 
 // Methods
 $.fire.prototype = {
-	create: function(){
+	create: function( opts ){
 		switch ( this.type ){
 			case "mousemove":
-				this.opts.cancelable = false;
+				opts.cancelable = false;
 			case "mousedown":
 			case "mouseup":
 			case "mouseover":
@@ -54,17 +61,17 @@ $.fire.prototype = {
 			case "touchstart":
 			case "touchmove":
 			case "touchend":
-				return this.mouse();
+				return this.mouse( opts );
 			case "keyup":
 			case "keypress":
 			case "keydown":
-				return this.key();
+				return this.key( opts );
 			default:
-				return this.event();
+				return this.event( opts );
 		}
 	},
-	event: function(){
-		var event, opts = this.opts;
+	event: function( opts ){
+		var event;
 		if ( document.createEvent ){
 			event = document.createEvent("HTMLEvents");
 			event.initEvent(
@@ -93,8 +100,8 @@ $.fire.prototype = {
 		}
 		return event;			
 	},
-	mouse: function(){
-		var event, opts = this.opts;
+	mouse: function( opts ){
+		var event;
 		if ( document.createEvent ){
 			event = document.createEvent("MouseEvents");
 			event.initMouseEvent(
@@ -121,8 +128,8 @@ $.fire.prototype = {
 		}
 		return event;
 	},
-	key: function(){
-		var event, opts = this.opts;
+	key: function( opts ){
+		var event;
 		if ( document.createEvent ) {
 			try {
 				event = document.createEvent("KeyEvents");
@@ -140,11 +147,11 @@ $.fire.prototype = {
 				);
 			} 
 			catch ( err ){
-				event = this.event();
+				event = this.event( opts );
 			}
 		} 
 		else if ( document.createEventObject ){
-			event = this.event();
+			event = this.event( opts );
 		}
 		if ( $.browser.msie || $.browser.opera ){
 			event.keyCode = opts.charCode > 0 ? opts.charCode : opts.keyCode;
@@ -160,5 +167,4 @@ $.fire.prototype = {
 	}
 };
 
-})( jQuery );
-
+})( jQuery, window );
