@@ -6,6 +6,7 @@
 
 // jQuery method
 $.fn.fire = function( type, opts ){
+	opts = opts || {};
 	// translate pageX to clientX
 	if ( opts.pageX && !opts.clientX )	
 		opts.clientX = opts.pageX - $( window ).scrollLeft();
