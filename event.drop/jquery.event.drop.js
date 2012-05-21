@@ -1,11 +1,11 @@
 /*! 
- * jquery.event.drop - v 2.1.0 
+ * jquery.event.drop - v 2.2
  * Copyright (c) 2010 Three Dub Media - http://threedubmedia.com
  * Open Source MIT License - http://threedubmedia.com/code/license
  */
 // Created: 2008-06-04 
-// Updated: 2010-09-03
-// REQUIRES: jquery 1.4.2+, event.drag 2.1+
+// Updated: 2012-05-21
+// REQUIRES: jquery 1.7.x, event.drag 2.2
 
 ;(function($){ // secure $ jQuery alias
 
@@ -56,6 +56,9 @@ drop = $.event.special.drop = {
 	// the key name for stored drop data
 	datakey: "dropdata",
 		
+	// prevent bubbling for better performance
+	noBubble: true,
+	
 	// count bound related events
 	add: function( obj ){ 
 		// read the interaction data
