@@ -1,11 +1,11 @@
 /*! 
- * jquery.event.drop.live - v 2.1.0 
+ * jquery.event.drop.live - v 2.2
  * Copyright (c) 2010 Three Dub Media - http://threedubmedia.com
  * Open Source MIT License - http://threedubmedia.com/code/license
  */
 // Created: 2010-06-07
-// Updated: 2010-09-13
-// REQUIRES: jquery 1.4.2+, event.drag 2.1+, event.drop 2.1+
+// Updated: 2012-05-21
+// REQUIRES: jquery 1.7.x, event.drag 2.2, event.drop 2.2
 
 ;(function($){ // secure $ jQuery alias
 
@@ -17,6 +17,9 @@ drop = $event.special.drop,
 origadd = drop.add,
 // old drop event teradown method
 origteardown = drop.teardown;
+
+// allow events to bubble for delegation
+drop.noBubble = false;
 
 // the namespace for internal live events
 drop.livekey = "livedrop";
@@ -55,23 +58,25 @@ drop.delegate = function( event, dd ){
 	// element event structure
 	events = $.data( this, "events" ) || {};
 	// query live events
-	$.each( events.live || [], function( i, obj ){
+	$.each( events || [], function( key, arr ){
 		// no event type matches
-		if ( obj.preType.indexOf("drop") !== 0 )
+		if ( key.indexOf("drop") !== 0 )
 			return;
-		// locate the elements to delegate
-		$targets = $( event.currentTarget ).find( obj.selector );
-		// no element found
-		if ( !$targets.length ) 
-			return;
-		// take each target...
-		$targets.each(function(){
-			// add an event handler
-			$event.add( this, obj.origType +'.'+ drop.livekey, obj.origHandler, obj.data );
-			// remember new elements
-			if ( $.inArray( this, elems ) < 0 )
-				elems.push( this );	
-		});	
+		$.each( arr, function( i, obj ){
+			// locate the elements to delegate
+			$targets = $( event.currentTarget ).find( obj.selector );
+			// no element found
+			if ( !$targets.length ) 
+				return;
+			// take each target...
+			$targets.each(function(){
+				// add an event handler
+				$event.add( this, obj.origType +'.'+ drop.livekey, obj.origHandler || obj.handler, obj.data );
+				// remember new elements
+				if ( $.inArray( this, elems ) < 0 )
+					elems.push( this );	
+			});	
+		});
 	});
 	// may not exist when artifically triggering dropinit event
 	if ( dd )
