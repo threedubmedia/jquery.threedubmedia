@@ -159,19 +159,11 @@ drop = $.event.special.drop = {
 	// returns the location positions of an element
 	locate: function( elem, index ){ 
 		var data = $.data( elem, drop.datakey ),
-		$elem = $( elem ), 
-		posi = $elem.offset() || {}, 
-		height = $elem.outerHeight(), 
-		width = $elem.outerWidth(),
-		location = { 
-			elem: elem, 
-			width: width, 
-			height: height,
-			top: posi.top, 
-			left: posi.left, 
-			right: posi.left + width, 
-			bottom: posi.top + height
-		};
+		location = $.extend({elem:elem}, elem.getBoundingClientRect());
+		if (!location.width) {
+			location.width = location.right - location.left;
+			location.height = location.bottom - location.top;
+		}
 		// drag elements might not have dropdata
 		if ( data ){
 			data.location = location;
