@@ -367,7 +367,7 @@ drag.callback.prototype = {
 // patch $.event.$dispatch to allow suppressing clicks
 var $dispatch = $event.dispatch;
 $event.dispatch = function( event ){
-	if ( $.data( this, "suppress."+ event.type ) - new Date().getTime() > 0 ){
+	if ( event && event.type && $.data( this, "suppress."+ event.type ) - new Date().getTime() > 0 ){
 		$.removeData( this, "suppress."+ event.type );
 		return;
 	}
