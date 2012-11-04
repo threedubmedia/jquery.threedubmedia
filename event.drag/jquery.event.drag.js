@@ -78,7 +78,7 @@ drag = $special.drag = {
 		// store the interaction data
 		$.data( this, drag.datakey, data );
 		// bind the mousedown event, which starts drag interactions
-		$event.add( this, "touchstart mousedown", drag.init, data );
+		$event.add( this, "touchstart mousedown MSPointerDown", drag.init, data );
 		// prevent image dragging in IE...
 		if ( this.attachEvent ) 
 			this.attachEvent("ondragstart", drag.dontstart ); 
@@ -93,7 +93,7 @@ drag = $special.drag = {
 		// remove the stored data
 		$.removeData( this, drag.datakey );
 		// remove the mousedown event
-		$event.remove( this, "touchstart mousedown", drag.init );
+		$event.remove( this, "touchstart mousedown MSPointerDown", drag.init );
 		// enable text selection
 		drag.textselect( true ); 
 		// un-prevent image dragging in IE...
@@ -118,7 +118,8 @@ drag = $special.drag = {
 		if ( dd.handle && !$( event.target ).closest( dd.handle, event.currentTarget ).length ) 
 			return;
 
-		drag.touched = event.type == 'touchstart' ? this : null;
+		drag.touched = (event.type == 'touchstart' || event.type == 'MSPointerDown') ? this : null;
+		drag.touchedMSPointer = event.type == 'MSPointerDown';
 		dd.propagates = 1;
 		dd.mousedown = this;
 		dd.interactions = [ drag.interaction( this, dd ) ];
@@ -148,10 +149,13 @@ drag = $special.drag = {
 		// disable text selection
 		drag.textselect( false ); 
 		// bind additional events...
-		if ( drag.touched )
+		if ( drag.touchedMSPointer ) {
+			$event.add( document, "MSPointerMove MSPointerUp MSPointerCancel", drag.handler, dd );
+		} else if ( drag.touched ) {
 			$event.add( drag.touched, "touchmove touchend", drag.handler, dd );
-		else 
+		} else {
 			$event.add( document, "mousemove mouseup", drag.handler, dd );
+		}
 		// helps prevent text selection or scrolling
 		if ( !drag.touched || dd.live )
 			return false;
@@ -176,6 +180,7 @@ drag = $special.drag = {
 		switch ( event.type ){
 			// mousemove, check distance, start dragging
 			case !dd.dragging && 'touchmove': 
+			case !dd.dragging && 'MSPointerMove': 
 				event.preventDefault();
 			case !dd.dragging && 'mousemove':
 				//  drag tolerance, x² + y² = distance²
@@ -186,6 +191,7 @@ drag = $special.drag = {
 				if ( dd.propagates ) // "dragstart" not rejected
 					dd.dragging = true; // activate interaction
 			// mousemove, dragging
+			case 'MSPointerMove':
 			case 'touchmove':
 				event.preventDefault();
 			case 'mousemove':
@@ -201,13 +207,18 @@ drag = $special.drag = {
 					event.type = "mouseup"; // helps "drop" handler behave
 				}
 			// mouseup, stop dragging
+			case 'MSPointerUp':
+			case 'MSPointerCancel':
 			case 'touchend': 
 			case 'mouseup': 
 			default:
-				if ( drag.touched )
+				if ( drag.touchedMSPointer ) {
+					$event.remove( document, "MSPointerMove MSPointerUp MSPointerCancel", drag.handler ); // remove touch events
+				} else if ( drag.touched && !drag.touchedMSPointer ) {
 					$event.remove( drag.touched, "touchmove touchend", drag.handler ); // remove touch events
-				else 
+				} else {
 					$event.remove( document, "mousemove mouseup", drag.handler ); // remove page events	
+				}
 				if ( dd.dragging ){
 					if ( dd.drop !== false && $special.drop )
 						$special.drop.handler( event, dd ); // "drop"
@@ -217,7 +228,7 @@ drag = $special.drag = {
 				// if suppressing click events...
 				if ( dd.click === false && dd.dragging )
 					$.data( dd.mousedown, "suppress.click", new Date().getTime() + 5 );
-				dd.dragging = drag.touched = false; // deactivate element	
+				dd.dragging = drag.touched = drag.touchedMSPointer = false; // deactivate element	
 				break;
 		}
 	},
@@ -372,6 +383,22 @@ $event.dispatch = function( event ){
 		return;
 	}
 	return $dispatch.apply( this, arguments );
+};
+
+// event fix hooks for MS pointer (IE10) events...
+var msPointerHooks =
+$event.fixHooks.MSPointerMove = 
+$event.fixHooks.MSPointerUp = 
+$event.fixHooks.MSPointerDown = {
+	props: "clientX clientY pageX pageY screenX screenY".split( " " ),
+	filter: function( event, orig ) {
+		if ( orig ){
+			$.each( msPointerHooks.props, function( i, prop ){
+				event[ prop ] = orig[ prop ];
+			});
+		}
+		return event;
+	}
 };
 
 // event fix hooks for touch events...
