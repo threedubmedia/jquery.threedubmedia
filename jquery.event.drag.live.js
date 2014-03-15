@@ -1,4 +1,4 @@
-/*! 
+/*!
  * jquery.event.drag.live - v 2.2
  * Copyright (c) 2010 Three Dub Media - http://threedubmedia.com
  * Open Source MIT License - http://threedubmedia.com/code/license
@@ -7,8 +7,8 @@
 // Updated: 2012-05-21
 // REQUIRES: jquery 1.7.x, event.drag 2.2
 
-;(function( $ ){
-	
+module.exports = function( $ ){
+
 // local refs (increase compression)
 var $event = $.event,
 // ref the special event config
@@ -25,7 +25,7 @@ drag.noBubble = false;
 drag.livekey = "livedrag";
 
 // new drop event add method
-drag.add = function( obj ){ 
+drag.add = function( obj ){
 	// call the old method
 	origadd.apply( this, arguments );
 	// read the data
@@ -38,7 +38,7 @@ drag.add = function( obj ){
 };
 
 // new drop event teardown method
-drag.teardown = function(){ 
+drag.teardown = function(){
 	// call the old method
 	origteardown.apply( this, arguments );
 	// read the data
@@ -54,7 +54,7 @@ drag.teardown = function(){
 // identify potential delegate elements
 drag.delegate = function( event ){
 	// local refs
-	var elems = [], target, 
+	var elems = [], target,
 	// element event structure
 	events = $.data( this, "events" ) || {};
 	// query live events
@@ -66,22 +66,22 @@ drag.delegate = function( event ){
 			// locate the element to delegate
 			target = $( event.target ).closest( obj.selector, event.currentTarget )[0];
 			// no element found
-			if ( !target ) 
+			if ( !target )
 				return;
 			// add an event handler
 			$event.add( target, obj.origType+'.'+drag.livekey, obj.origHandler || obj.handler, obj.data );
 			// remember new elements
 			if ( $.inArray( target, elems ) < 0 )
-				elems.push( target );		
+				elems.push( target );
 		});
 	});
 	// if there are no elements, break
-	if ( !elems.length ) 
+	if ( !elems.length )
 		return false;
-	// return the matched results, and clenup when complete		
+	// return the matched results, and clenup when complete
 	return $( elems ).bind("dragend."+ drag.livekey, function(){
 		$event.remove( this, "."+ drag.livekey ); // cleanup delegation
 	});
 };
-	
-})( jQuery );
+
+};
