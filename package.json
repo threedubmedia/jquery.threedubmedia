@@ -1,6 +1,6 @@
 {
   "name": "jquery.event.drag",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Drag events for jQuery, from https://github.com/threedubmedia/jquery.threedubmedia",
   "main": "jquery.event.drag.live.js",
   "repository": {
