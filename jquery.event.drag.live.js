@@ -57,7 +57,7 @@ module.exports = function( $ ){
   	// local refs
   	var elems = [], target,
   	// element event structure
-  	events = $.data( this, "events" ) || {};
+  	events = $._data( this, "events" ) || {};
   	// query live events
   	$.each( events || [], function( key, arr ){
   		// no event type matches
@@ -65,7 +65,7 @@ module.exports = function( $ ){
   			return;
   		$.each( arr || [], function( i, obj ){
   			// locate the element to delegate
-  			target = $( event.target ).closest( obj.selector, event.currentTarget )[0];
+  			target = $( event.target ).closest( obj.selector )[0];
   			// no element found
   			if ( !target )
   				return;
