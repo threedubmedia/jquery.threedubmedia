@@ -1,0 +1,21 @@
+{
+  "name": "jquery.threedubmedia",
+  "version": "1.0.0",
+  "description": "jquery plugins http://threedubmedia.com",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trazyn/jquery.threedubmedia.git"
+  },
+  "author": "mhelgeson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/trazyn/jquery.threedubmedia/issues"
+  },
+  "homepage": "https://github.com/trazyn/jquery.threedubmedia#readme",
+  "dependencies": {},
+  "devDependencies": {}
+}
