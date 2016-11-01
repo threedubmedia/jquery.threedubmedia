@@ -1,0 +1,16 @@
+{
+  "name": "jquery.event.drag",
+  "version": "2.2.2",
+  "description": "Drag events for jQuery, from https://github.com/threedubmedia/jquery.threedubmedia",
+  "main": "jquery.event.drag.live.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/devongovett/jquery.event.drag.git"
+  },
+  "author": "Devon Govett <devongovett@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/devongovett/jquery.threedubmedia/issues"
+  },
+  "homepage": "https://github.com/devongovett/jquery.threedubmedia"
+}
